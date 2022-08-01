@@ -10,8 +10,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model AuthUser {
   id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String?
+  login String  @unique
+  email String @unique
+  password  String
+  createdAt DateTime @default(now())
+  role Role @default(BUYER)
+  isBanned Boolean @default(false)
+  banReason String?
+  refreshList String[] @default([])
+}
+
+enum Role {
+  BUYER
+  SALESMAN
+  MODERATOR
+  ADMIN
 }
