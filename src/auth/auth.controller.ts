@@ -17,7 +17,7 @@ export class AuthController {
 
   @Get(':id')
   async getAuth(@Param('id') id: number) {
-    return this.authService.auth({ id: id });
+    return await this.authService.getAuth({ id: id });
   }
 
   @Post()

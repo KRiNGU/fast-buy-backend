@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Auth, Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '@/prisma.service';
+import NotFoundException from '@/exceptions/not-found.exception';
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
-  async auth(
+  async getAuth(
     authWhereUniqueImput: Prisma.AuthWhereUniqueInput,
   ): Promise<Auth | null> {
     return;
