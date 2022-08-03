@@ -62,7 +62,7 @@ describe('AuthService', () => {
       });
 
       test('then it would call prismaService create method', () => {
-        expect(prismaService.auth.create).toBeCalledWith(mockAuth);
+        expect(prismaService.auth.create).toBeCalledWith({ data: mockAuth });
       });
 
       test('then it would return a created auth', () => {
@@ -110,7 +110,7 @@ describe('AuthService', () => {
       let auth: Auth;
 
       beforeEach(async () => {
-        auth = await service.delete({ where: { id: mockAuth.id } });
+        auth = await service.delete({ id: mockAuth.id });
       });
 
       test('then it would call prismaService delete method', () => {
