@@ -2,6 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@filters/*": ["./src/exception-filters/*"],
       "@/*": ["./src/*"]
     }
   }

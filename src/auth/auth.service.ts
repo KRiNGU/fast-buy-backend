@@ -1,42 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { Auth, Prisma } from '@prisma/client';
+import { Auth } from '@prisma/client';
 import { PrismaService } from '@/prisma.service';
+import { UpdateAuthDto } from './dto/update-auth.dto';
+import { CreateAuthDto } from './dto/create-auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
-  async getAuth(
-    authWhereUniqueInput: Prisma.AuthWhereUniqueInput,
-  ): Promise<Auth | null> {
-    return this.prisma.auth.findUnique({
-      where: {
-        id: authWhereUniqueInput?.id,
-        email: authWhereUniqueInput?.email,
-        login: authWhereUniqueInput?.login,
-      },
+  async getAuth(id: number): Promise<Auth | null> {
+    return await this.prisma.auth.findUniqueOrThrow({ where: { id: id } });
+  }
+
+  async createAuth(data: CreateAuthDto): Promise<Auth> {
+    return await this.prisma.auth.create({ data });
+  }
+
+  async updateAuth(id: number, data: UpdateAuthDto): Promise<Auth> {
+    return await this.prisma.auth.update({
+      where: { id },
+      data: data,
     });
   }
 
-  async createAuth(data: Prisma.AuthCreateInput): Promise<Auth> {
-    return this.prisma.auth.create({ data });
-  }
-
-  async update(params: {
-    where: Prisma.AuthWhereUniqueInput;
-    data: Prisma.AuthUpdateInput;
-  }): Promise<Auth> {
-    return this.prisma.auth.update({ where: params.where, data: params.data });
-  }
-
-  async delete(
-    authWhereUniqueInput: Prisma.AuthWhereUniqueInput,
-  ): Promise<Auth> {
-    return this.prisma.auth.delete({
+  async deleteAuth(id: number): Promise<Auth> {
+    return await this.prisma.auth.delete({
       where: {
-        id: authWhereUniqueInput?.id,
-        email: authWhereUniqueInput?.email,
-        login: authWhereUniqueInput?.login,
+        id,
       },
     });
   }

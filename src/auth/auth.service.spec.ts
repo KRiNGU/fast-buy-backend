@@ -32,7 +32,7 @@ describe('AuthService', () => {
       let auth: Auth;
 
       beforeEach(async () => {
-        auth = await service.getAuth({ id: mockAuth.id });
+        auth = await service.getAuth(mockAuth.id);
       });
 
       test('then it would call prismaService findUnique method', () => {
@@ -82,10 +82,7 @@ describe('AuthService', () => {
       let auth: Auth;
 
       beforeEach(async () => {
-        auth = await service.update({
-          where: { id: mockAuth.id },
-          data: updateMockAuth,
-        });
+        auth = await service.updateAuth(mockAuth.id, updateMockAuth);
       });
 
       test('then it would call prismaService update method', () => {
@@ -110,7 +107,7 @@ describe('AuthService', () => {
       let auth: Auth;
 
       beforeEach(async () => {
-        auth = await service.delete({ id: mockAuth.id });
+        auth = await service.deleteAuth(mockAuth.id);
       });
 
       test('then it would call prismaService delete method', () => {

@@ -1,37 +1,45 @@
+import { PrismaExceptionFilter } from '@filters/prisma-exception.filter';
 import {
   Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  UseFilters,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 
+@UseFilters(new PrismaExceptionFilter())
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Get(':id')
-  async getAuth(@Param('id') id: number) {
-    return await this.authService.getAuth({ id: id });
+  async getAuth(@Param('id', ParseIntPipe) id: number) {
+    return await this.authService.getAuth(id);
   }
 
   @Post()
   async createAuth(@Body() dto: CreateAuthDto) {
-    return this.authService.create(dto);
+    return await this.authService.createAuth(dto);
   }
 
   @Put(':id')
-  async updateAuth(@Body() dto: UpdateAuthDto, @Param('id') id: number) {
-    return this.authService.update({ where: { id: id }, data: dto });
+  async updateAuth(
+    @Body() dto: UpdateAuthDto,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    console.log(dto);
+    return await this.authService.updateAuth(id, dto);
   }
 
   @Delete(':id')
-  async deleteAuth(@Param('id') id: number) {
-    return this.authService.delete(id);
+  async deleteAuth(@Param('id', ParseIntPipe) id: number) {
+    return await this.authService.deleteAuth(id);
   }
 }
