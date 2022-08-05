@@ -1,4 +1,4 @@
-import { Auth, Role } from '@prisma/client';
+import { Auth } from '@prisma/client';
 
 export const mockAuth: Auth = {
   id: 123,
@@ -6,8 +6,8 @@ export const mockAuth: Auth = {
   email: 'user@example.com',
   password: 'password',
   createdAt: new Date(Date.now()),
-  role: Role.BUYER,
   isBanned: false,
   banReason: null,
   refreshList: [],
+  userId: 1,
 };

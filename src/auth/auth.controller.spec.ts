@@ -69,7 +69,7 @@ describe('AuthController', () => {
           login: mockAuth.login,
           password: mockAuth.password,
           email: mockAuth.email,
-          role: mockAuth.role,
+          userId: mockAuth.userId,
         });
       });
 
@@ -78,7 +78,7 @@ describe('AuthController', () => {
           login: mockAuth.login,
           password: mockAuth.password,
           email: mockAuth.email,
-          role: mockAuth.role,
+          userId: mockAuth.userId,
         });
       });
 

@@ -14,18 +14,20 @@ describe('AuthService', () => {
 
   describe('get auth', () => {
     beforeEach(() => {
-      prismaService.auth.findUnique = jest.fn().mockReturnValue(mockAuth);
+      prismaService.auth.findUniqueOrThrow = jest
+        .fn()
+        .mockReturnValue(mockAuth);
     });
 
     describe('when getAuth is called', () => {
       let auth: Auth;
 
       beforeEach(async () => {
-        auth = await service.deleteAuth(mockAuth.id);
+        auth = await service.getAuth(mockAuth.id);
       });
 
       test('then it would call prismaService findUnique method', () => {
-        expect(prismaService.auth.findUnique).toBeCalledWith({
+        expect(prismaService.auth.findUniqueOrThrow).toBeCalledWith({
           where: {
             id: mockAuth.id,
           },
