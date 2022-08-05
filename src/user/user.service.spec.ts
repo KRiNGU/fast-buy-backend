@@ -1,18 +1,128 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { PrismaService } from '@/prisma.service';
+import { User } from '@prisma/client';
+import { mockUser } from './mock/user.mock';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService],
-    }).compile();
-
-    service = module.get<UserService>(UserService);
+    prismaService = new PrismaService();
+    service = new UserService(prismaService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('get user', () => {
+    beforeEach(async () => {
+      prismaService.user.findUniqueOrThrow = jest
+        .fn()
+        .mockReturnValue(mockUser);
+    });
+
+    describe('when getUser is called', () => {
+      let user: User;
+
+      beforeEach(async () => {
+        user = await service.getUser(mockUser.id);
+      });
+
+      test('then it would call prismaService findUniqueOrThrow method', () => {
+        expect(prismaService.user.findUniqueOrThrow).toBeCalledWith({
+          where: { id: mockUser.id },
+        });
+      });
+
+      test('then it would return value', () => {
+        expect(user).toEqual(mockUser);
+      });
+    });
+  });
+
+  describe('create user', () => {
+    beforeEach(async () => {
+      prismaService.user.create = jest.fn().mockReturnValue(mockUser);
+    });
+
+    describe('when createUser is called', () => {
+      let user: User;
+
+      beforeEach(async () => {
+        user = await service.createUser({
+          name: mockUser.name,
+          lastName: mockUser.last_name,
+          patronymic: mockUser.patronymic,
+          role: mockUser.role,
+        });
+      });
+
+      test('then it would call prismaService create method', () => {
+        expect(prismaService.user.create).toBeCalledWith({
+          name: mockUser.name,
+          lastName: mockUser.last_name,
+          patronymic: mockUser.patronymic,
+          role: mockUser.role,
+        });
+      });
+
+      test('then it would return value', () => {
+        expect(user).toEqual(mockUser);
+      });
+    });
+  });
+
+  describe('update user', () => {
+    const updatedUser = { ...mockUser, name: 'Smith' };
+
+    beforeEach(async () => {
+      prismaService.user.update = jest.fn().mockReturnValue(mockUser);
+    });
+
+    describe('when updateUser is called', () => {
+      let user: User;
+
+      beforeEach(async () => {
+        user = await service.updateUser({
+          name: updatedUser.name,
+          lastName: updatedUser.last_name,
+          patronymic: updatedUser.patronymic,
+        });
+      });
+
+      test('then it would call prismaService update method', () => {
+        expect(prismaService.user.update).toBeCalledWith({
+          name: updatedUser.name,
+          lastName: updatedUser.last_name,
+          patronymic: updatedUser.patronymic,
+        });
+      });
+
+      test('then it would return value', () => {
+        expect(user).toEqual(updatedUser);
+      });
+    });
+  });
+
+  describe('delete user', () => {
+    beforeEach(async () => {
+      prismaService.user.delete = jest.fn().mockReturnValue(mockUser);
+    });
+
+    describe('when deleteUser is called', () => {
+      let user: User;
+
+      beforeEach(async () => {
+        user = await service.deleteUser(mockUser.id);
+      });
+
+      test('then it would call prismaService delete method', () => {
+        expect(prismaService.user.delete).toBeCalledWith({
+          where: { id: mockUser.id },
+        });
+      });
+
+      test('then it would return value', () => {
+        expect(user).toEqual(mockUser);
+      });
+    });
   });
 });
