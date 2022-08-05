@@ -1,18 +1,7 @@
 import { PrismaService } from '@/prisma.service';
-import { Auth, Role } from '@prisma/client';
+import { Auth } from '@prisma/client';
 import { AuthService } from './auth.service';
-
-const mockAuth: Auth = {
-  id: 123,
-  login: 'user',
-  email: 'user@example.com',
-  password: 'password',
-  createdAt: new Date(Date.now()),
-  role: Role.BUYER,
-  isBanned: false,
-  banReason: null,
-  refreshList: [],
-};
+import { mockAuth } from './mock/auth.mock';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -32,7 +21,7 @@ describe('AuthService', () => {
       let auth: Auth;
 
       beforeEach(async () => {
-        auth = await service.getAuth(mockAuth.id);
+        auth = await service.deleteAuth(mockAuth.id);
       });
 
       test('then it would call prismaService findUnique method', () => {

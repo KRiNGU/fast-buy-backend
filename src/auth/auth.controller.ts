@@ -21,7 +21,7 @@ export class AuthController {
 
   @Get(':id')
   async getAuth(@Param('id', ParseIntPipe) id: number) {
-    return await this.authService.getAuth(id);
+    return await this.authService.deleteAuth(id);
   }
 
   @Post()
@@ -31,8 +31,8 @@ export class AuthController {
 
   @Put(':id')
   async updateAuth(
-    @Body() dto: UpdateAuthDto,
     @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateAuthDto,
   ) {
     console.log(dto);
     return await this.authService.updateAuth(id, dto);
