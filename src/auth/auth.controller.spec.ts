@@ -14,18 +14,18 @@ describe('AuthController', () => {
 
   describe('getAuth', () => {
     beforeEach(() => {
-      service.deleteAuth = jest.fn().mockReturnValue(mockAuth);
+      service.getAuth = jest.fn().mockReturnValue(mockAuth);
     });
 
     describe('when getAuth is called', () => {
       let auth: Auth;
 
       beforeEach(async () => {
-        auth = await controller.deleteAuth(mockAuth.id);
+        auth = await controller.getAuth(mockAuth.id);
       });
 
       test('then it should call authService getAuth method', () => {
-        expect(service.deleteAuth).toBeCalledWith(mockAuth.id);
+        expect(service.getAuth).toBeCalledWith(mockAuth.id);
       });
 
       test('then it should return value', () => {

@@ -49,7 +49,7 @@ describe('UserService', () => {
       beforeEach(async () => {
         user = await service.createUser({
           name: mockUser.name,
-          lastName: mockUser.last_name,
+          lastName: mockUser.lastName,
           patronymic: mockUser.patronymic,
           role: mockUser.role,
         });
@@ -58,7 +58,7 @@ describe('UserService', () => {
       test('then it would call prismaService create method', () => {
         expect(prismaService.user.create).toBeCalledWith({
           name: mockUser.name,
-          lastName: mockUser.last_name,
+          lastName: mockUser.lastName,
           patronymic: mockUser.patronymic,
           role: mockUser.role,
         });
@@ -81,17 +81,17 @@ describe('UserService', () => {
       let user: User;
 
       beforeEach(async () => {
-        user = await service.updateUser({
+        user = await service.updateUser(updatedUser.id, {
           name: updatedUser.name,
-          lastName: updatedUser.last_name,
+          lastName: updatedUser.lastName,
           patronymic: updatedUser.patronymic,
         });
       });
 
       test('then it would call prismaService update method', () => {
-        expect(prismaService.user.update).toBeCalledWith({
+        expect(prismaService.user.update).toBeCalledWith(updatedUser.id, {
           name: updatedUser.name,
-          lastName: updatedUser.last_name,
+          lastName: updatedUser.lastName,
           patronymic: updatedUser.patronymic,
         });
       });

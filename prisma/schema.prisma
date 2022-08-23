@@ -13,7 +13,7 @@ datasource db {
 model User {
   id Int @default(autoincrement()) @id
   name String
-  last_name String
+  lastName String
   patronymic String?
   role Role @default(BUYER)
   createdAt DateTime @default(now())

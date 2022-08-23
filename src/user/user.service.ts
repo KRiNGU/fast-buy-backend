@@ -16,7 +16,7 @@ export class UserService {
     return;
   }
 
-  async updateUser(dto: UpdateUserDto): Promise<User> {
+  async updateUser(id: number, dto: UpdateUserDto): Promise<User> {
     return;
   }
 
