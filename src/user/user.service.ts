@@ -9,18 +9,23 @@ export class UserService {
   constructor(private prismaService: PrismaService) {}
 
   async getUser(id: number): Promise<User> {
-    return;
+    return await this.prismaService.user.findUniqueOrThrow({
+      where: { id: id },
+    });
   }
 
   async createUser(dto: CreateUserDto): Promise<User> {
-    return;
+    return await this.prismaService.user.create({ data: dto });
   }
 
   async updateUser(id: number, dto: UpdateUserDto): Promise<User> {
-    return;
+    return await this.prismaService.user.update({
+      where: { id: id },
+      data: dto,
+    });
   }
 
   async deleteUser(id: number): Promise<User> {
-    return;
+    return await this.prismaService.user.delete({ where: { id: id } });
   }
 }

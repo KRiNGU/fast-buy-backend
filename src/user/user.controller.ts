@@ -18,12 +18,12 @@ export class UserController {
 
   @Get(':id')
   async getUser(@Param('id', ParseIntPipe) id: number) {
-    return;
+    return await this.userService.getUser(id);
   }
 
   @Post()
   async createUser(@Body() user: CreateUserDto) {
-    return;
+    return await this.userService.createUser(user);
   }
 
   @Put(':id')
@@ -31,11 +31,11 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateUserDto,
   ) {
-    return;
+    return await this.userService.updateUser(id, dto);
   }
 
   @Delete(':id')
   async deleteUser(@Param('id', ParseIntPipe) id: number) {
-    return;
+    return await this.userService.deleteUser(id);
   }
 }

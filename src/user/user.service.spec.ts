@@ -57,10 +57,12 @@ describe('UserService', () => {
 
       test('then it would call prismaService create method', () => {
         expect(prismaService.user.create).toBeCalledWith({
-          name: mockUser.name,
-          lastName: mockUser.lastName,
-          patronymic: mockUser.patronymic,
-          role: mockUser.role,
+          data: {
+            name: mockUser.name,
+            lastName: mockUser.lastName,
+            patronymic: mockUser.patronymic,
+            role: mockUser.role,
+          },
         });
       });
 
@@ -74,7 +76,7 @@ describe('UserService', () => {
     const updatedUser = { ...mockUser, name: 'Smith' };
 
     beforeEach(async () => {
-      prismaService.user.update = jest.fn().mockReturnValue(mockUser);
+      prismaService.user.update = jest.fn().mockReturnValue(updatedUser);
     });
 
     describe('when updateUser is called', () => {
@@ -89,10 +91,13 @@ describe('UserService', () => {
       });
 
       test('then it would call prismaService update method', () => {
-        expect(prismaService.user.update).toBeCalledWith(updatedUser.id, {
-          name: updatedUser.name,
-          lastName: updatedUser.lastName,
-          patronymic: updatedUser.patronymic,
+        expect(prismaService.user.update).toBeCalledWith({
+          where: { id: updatedUser.id },
+          data: {
+            name: updatedUser.name,
+            lastName: updatedUser.lastName,
+            patronymic: updatedUser.patronymic,
+          },
         });
       });
 

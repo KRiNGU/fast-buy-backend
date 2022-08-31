@@ -12,8 +12,8 @@ export class AuthService {
     return await this.prisma.auth.findUniqueOrThrow({ where: { id: id } });
   }
 
-  async createAuth(data: CreateAuthDto): Promise<Auth> {
-    return await this.prisma.auth.create({ data });
+  async createAuth(dto: CreateAuthDto): Promise<Auth> {
+    return await this.prisma.auth.create({ data: dto });
   }
 
   async updateAuth(id: number, data: UpdateAuthDto): Promise<Auth> {
