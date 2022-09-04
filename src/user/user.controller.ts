@@ -1,3 +1,4 @@
+import { PrismaExceptionFilter } from '@filters/prisma-exception.filter';
 import {
   Body,
   Controller,
@@ -7,11 +8,13 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseFilters,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 
+@UseFilters(new PrismaExceptionFilter())
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
