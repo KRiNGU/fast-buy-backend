@@ -76,10 +76,7 @@ describe('CommentService', () => {
       });
 
       test('then it would return value', () => {
-        expect(comment).toEqual({
-          ...mockComment,
-          commentersName,
-        });
+        expect(comment).toEqual(mockComment);
       });
     });
   });
