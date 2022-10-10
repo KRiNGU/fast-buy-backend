@@ -1,4 +1,4 @@
-import { Comment, Item } from '@prisma/client';
+import { Comment } from '@prisma/client';
 import { mockComment } from './mock/comment.mock';
 import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
