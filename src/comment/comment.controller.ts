@@ -21,12 +21,12 @@ export class CommentController {
 
   @Get(':id')
   async getComment(@Param('id', ParseIntPipe) id: number) {
-    return null;
+    return await this.commentService.getComment(id);
   }
 
   @Post()
   async createComment(@Body() comment: CreateCommentDto) {
-    return null;
+    return await this.commentService.createComment(comment);
   }
 
   @Put(':id')
@@ -34,11 +34,11 @@ export class CommentController {
     @Param('id', ParseIntPipe) id: number,
     @Body() comment: UpdateCommentDto,
   ) {
-    return null;
+    return await this.commentService.updateComment(id, comment);
   }
 
   @Delete(':id')
   async deleteComment(@Param('id', ParseIntPipe) id: number) {
-    return null;
+    return await this.commentService.deleteComment(id);
   }
 }
