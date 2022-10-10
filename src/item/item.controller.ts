@@ -21,12 +21,12 @@ export class ItemController {
 
   @Get(':id')
   async getItem(@Param('id', ParseIntPipe) id: number) {
-    return null;
+    return await this.itemService.getItem(id);
   }
 
   @Post()
   async createItem(@Body() item: CreateItemDto) {
-    return null;
+    return await this.itemService.createItem(item);
   }
 
   @Put(':id')
@@ -34,11 +34,11 @@ export class ItemController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateItemDto,
   ) {
-    return null;
+    return await this.itemService.updateItem(id, dto);
   }
 
   @Delete(':id')
   async deleteItem(@Param('id', ParseIntPipe) id: number) {
-    return null;
+    return await this.itemService.deleteItem(id);
   }
 }
