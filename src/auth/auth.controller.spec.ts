@@ -24,11 +24,11 @@ describe('AuthController', () => {
         auth = await controller.getAuth(mockAuth.id);
       });
 
-      test('then it should call authService getAuth method', () => {
+      test('then it would call authService getAuth method', () => {
         expect(service.getAuth).toBeCalledWith(mockAuth.id);
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(auth).toEqual(mockAuth);
       });
     });
@@ -46,11 +46,11 @@ describe('AuthController', () => {
         auth = await controller.deleteAuth(mockAuth.id);
       });
 
-      test('then it should call authService deleteAuth method', () => {
+      test('then it would call authService deleteAuth method', () => {
         expect(service.deleteAuth).toBeCalledWith(mockAuth.id);
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(auth).toEqual(mockAuth);
       });
     });
@@ -73,7 +73,7 @@ describe('AuthController', () => {
         });
       });
 
-      test('then it should call authService createAuth method', () => {
+      test('then it would call authService createAuth method', () => {
         expect(service.createAuth).toBeCalledWith({
           login: mockAuth.login,
           password: mockAuth.password,
@@ -82,7 +82,7 @@ describe('AuthController', () => {
         });
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(auth).toEqual(mockAuth);
       });
     });
@@ -102,11 +102,11 @@ describe('AuthController', () => {
         auth = await controller.updateAuth(mockAuth.id, updatedAuth);
       });
 
-      test('then it should call authService updateAuth method', () => {
+      test('then it would call authService updateAuth method', () => {
         expect(service.updateAuth).toBeCalledWith(mockAuth.id, updatedAuth);
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(auth).toEqual(updatedAuth);
       });
     });

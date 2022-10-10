@@ -24,11 +24,11 @@ describe('UserController', () => {
         item = await controller.getItem(mockItem.id);
       });
 
-      test('then it should call itemService getItem method', () => {
+      test('then it would call itemService getItem method', () => {
         expect(service.getItem).toBeCalledWith(mockItem.id);
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(item).toEqual(mockItem);
       });
     });
@@ -46,11 +46,11 @@ describe('UserController', () => {
         item = await controller.deleteItem(mockItem.id);
       });
 
-      test('then it should call itemService deleteItem method', () => {
+      test('then it would call itemService deleteItem method', () => {
         expect(service.deleteItem).toBeCalledWith(mockItem.id);
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(item).toEqual(mockItem);
       });
     });
@@ -71,14 +71,14 @@ describe('UserController', () => {
         });
       });
 
-      test('then it should call itemService createItem method', () => {
+      test('then it would call itemService createItem method', () => {
         expect(service.createItem).toBeCalledWith({
           name: mockItem.name,
           description: mockItem.description,
         });
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(item).toEqual(mockItem);
       });
     });
@@ -98,11 +98,11 @@ describe('UserController', () => {
         item = await controller.updateItem(mockItem.id, updatedItem);
       });
 
-      test('then it should call itemService updateItem method', () => {
+      test('then it would call itemService updateItem method', () => {
         expect(service.updateItem).toBeCalledWith(mockItem.id, updatedItem);
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(item).toEqual(updatedItem);
       });
     });

@@ -6,25 +6,27 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prismaService: PrismaService) {}
 
-  async getAuth(id: number): Promise<Auth | null> {
-    return await this.prisma.auth.findUniqueOrThrow({ where: { id: id } });
+  async getAuth(id: number): Promise<Auth> {
+    return await this.prismaService.auth.findUniqueOrThrow({
+      where: { id: id },
+    });
   }
 
   async createAuth(dto: CreateAuthDto): Promise<Auth> {
-    return await this.prisma.auth.create({ data: dto });
+    return await this.prismaService.auth.create({ data: dto });
   }
 
   async updateAuth(id: number, data: UpdateAuthDto): Promise<Auth> {
-    return await this.prisma.auth.update({
+    return await this.prismaService.auth.update({
       where: { id },
       data: data,
     });
   }
 
   async deleteAuth(id: number): Promise<Auth> {
-    return await this.prisma.auth.delete({
+    return await this.prismaService.auth.delete({
       where: {
         id,
       },

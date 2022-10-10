@@ -24,11 +24,11 @@ describe('UserController', () => {
         user = await controller.getUser(mockUser.id);
       });
 
-      test('then it should call userService getUser method', () => {
+      test('then it would call userService getUser method', () => {
         expect(service.getUser).toBeCalledWith(mockUser.id);
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(user).toEqual(mockUser);
       });
     });
@@ -46,11 +46,11 @@ describe('UserController', () => {
         auth = await controller.deleteUser(mockUser.id);
       });
 
-      test('then it should call userService deleteUser method', () => {
+      test('then it would call userService deleteUser method', () => {
         expect(service.deleteUser).toBeCalledWith(mockUser.id);
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(auth).toEqual(mockUser);
       });
     });
@@ -73,7 +73,7 @@ describe('UserController', () => {
         });
       });
 
-      test('then it should call userService createUser method', () => {
+      test('then it would call userService createUser method', () => {
         expect(service.createUser).toBeCalledWith({
           name: mockUser.name,
           lastName: mockUser.lastName,
@@ -82,7 +82,7 @@ describe('UserController', () => {
         });
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(auth).toEqual(mockUser);
       });
     });
@@ -102,11 +102,11 @@ describe('UserController', () => {
         auth = await controller.updateUser(mockUser.id, updatedUser);
       });
 
-      test('then it should call userService updateUser method', () => {
+      test('then it would call userService updateUser method', () => {
         expect(service.updateUser).toBeCalledWith(mockUser.id, updatedUser);
       });
 
-      test('then it should return value', () => {
+      test('then it would return value', () => {
         expect(auth).toEqual(updatedUser);
       });
     });
