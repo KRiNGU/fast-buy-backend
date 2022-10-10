@@ -18,6 +18,7 @@ model User {
   role Role @default(BUYER)
   createdAt DateTime @default(now())
   auth Auth?
+  comments Comment[]
 }
 
 model Auth {
@@ -38,6 +39,17 @@ model Item {
   name String @unique
   description String @unique
   numberOfPurchases Int @default(0)
+  comments Comment[]
+}
+
+model Comment {
+  id Int @default(autoincrement()) @id
+  commentersName String
+  item Item @relation(fields: [itemId], references: [id])
+  itemId Int
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  text String
 }
 
 enum Role {
