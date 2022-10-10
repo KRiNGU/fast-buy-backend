@@ -33,6 +33,13 @@ model Auth {
   userId Int @unique
 }
 
+model Item {
+  id Int @default(autoincrement()) @id
+  name String @unique
+  description String @unique
+  numberOfPurchases Int @default(0)
+}
+
 enum Role {
   BUYER
   SALESMAN
