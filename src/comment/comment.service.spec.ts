@@ -2,6 +2,8 @@ import { PrismaService } from '@/prisma.service';
 import { Comment } from '@prisma/client';
 import { mockComment } from './mock/comment.mock';
 import { CommentService } from './comment.service';
+import { mockUser } from '@/user/mock/user.mock';
+import { shortenedName } from '@/utils/utils';
 
 describe('CommentService', () => {
   let service: CommentService;
@@ -41,10 +43,18 @@ describe('CommentService', () => {
   describe('create comment', () => {
     beforeEach(async () => {
       prismaService.comment.create = jest.fn().mockReturnValue(mockComment);
+      prismaService.user.findUniqueOrThrow = jest
+        .fn()
+        .mockResolvedValue(mockUser);
     });
 
     describe('when createComment is called', () => {
       let comment: Comment;
+      const commentersName = shortenedName(
+        mockUser.name,
+        mockUser.lastName,
+        mockUser.patronymic,
+      );
 
       beforeEach(async () => {
         comment = await service.createComment({
@@ -60,12 +70,16 @@ describe('CommentService', () => {
             text: mockComment.text,
             userId: mockComment.userId,
             itemId: mockComment.itemId,
+            commentersName,
           },
         });
       });
 
       test('then it would return value', () => {
-        expect(comment).toEqual(mockComment);
+        expect(comment).toEqual({
+          ...mockComment,
+          commentersName,
+        });
       });
     });
   });
