@@ -15,6 +15,7 @@ export class PrismaExceptionFilter extends BaseExceptionFilter {
   private errorCodesToStatusMapping: ErrorCodesToStatusMapping = {
     P2000: HttpStatus.BAD_REQUEST,
     P2002: HttpStatus.CONFLICT,
+    P2003: HttpStatus.BAD_REQUEST,
     P2025: HttpStatus.NOT_FOUND,
   };
 
