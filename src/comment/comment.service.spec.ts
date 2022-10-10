@@ -1,18 +1,130 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { PrismaService } from '@/prisma.service';
+import { Comment } from '@prisma/client';
+import { mockComment } from './mock/comment.mock';
 import { CommentService } from './comment.service';
 
 describe('CommentService', () => {
   let service: CommentService;
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [CommentService],
-    }).compile();
-
-    service = module.get<CommentService>(CommentService);
+    prismaService = new PrismaService();
+    service = new CommentService(prismaService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('get comment', () => {
+    beforeEach(async () => {
+      prismaService.comment.findUniqueOrThrow = jest
+        .fn()
+        .mockReturnValue(mockComment);
+    });
+
+    describe('when getComment is called', () => {
+      let comment: Comment;
+
+      beforeEach(async () => {
+        comment = await service.getComment(mockComment.id);
+      });
+
+      test('then it would call prismaService findUniqueOrThrow method', () => {
+        expect(prismaService.comment.findUniqueOrThrow).toBeCalledWith({
+          where: { id: mockComment.id },
+        });
+      });
+
+      test('then it would return value', () => {
+        expect(comment).toEqual(mockComment);
+      });
+    });
+  });
+
+  describe('create comment', () => {
+    beforeEach(async () => {
+      prismaService.comment.create = jest.fn().mockReturnValue(mockComment);
+    });
+
+    describe('when createComment is called', () => {
+      let comment: Comment;
+
+      beforeEach(async () => {
+        comment = await service.createComment({
+          text: mockComment.text,
+          userId: mockComment.userId,
+          itemId: mockComment.itemId,
+        });
+      });
+
+      test('then it would call prismaService create method', () => {
+        expect(prismaService.comment.create).toBeCalledWith({
+          data: {
+            text: mockComment.text,
+            userId: mockComment.userId,
+            itemId: mockComment.itemId,
+          },
+        });
+      });
+
+      test('then it would return value', () => {
+        expect(comment).toEqual(mockComment);
+      });
+    });
+  });
+
+  describe('update comment', () => {
+    const updatedComment = {
+      ...mockComment,
+      text: 'This is updated commentary for item 1.',
+    };
+
+    beforeEach(async () => {
+      prismaService.comment.update = jest.fn().mockReturnValue(updatedComment);
+    });
+
+    describe('when updateComment is called', () => {
+      let comment: Comment;
+
+      beforeEach(async () => {
+        comment = await service.updateComment(updatedComment.id, {
+          text: updatedComment.text,
+        });
+      });
+
+      test('then it would call prismaService update method', () => {
+        expect(prismaService.comment.update).toBeCalledWith({
+          where: { id: updatedComment.id },
+          data: {
+            text: updatedComment.text,
+          },
+        });
+      });
+
+      test('then it would return value', () => {
+        expect(comment).toEqual(updatedComment);
+      });
+    });
+  });
+
+  describe('delete comment', () => {
+    beforeEach(async () => {
+      prismaService.comment.delete = jest.fn().mockReturnValue(mockComment);
+    });
+
+    describe('when deleteComment is called', () => {
+      let comment: Comment;
+
+      beforeEach(async () => {
+        comment = await service.deleteComment(mockComment.id);
+      });
+
+      test('then it would call prismaService delete method', () => {
+        expect(prismaService.comment.delete).toBeCalledWith({
+          where: { id: mockComment.id },
+        });
+      });
+
+      test('then it would return value', () => {
+        expect(comment).toEqual(mockComment);
+      });
+    });
   });
 });
