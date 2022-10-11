@@ -1,18 +1,7 @@
 import { PrismaExceptionFilter } from '@filters/prisma-exception.filter';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  Put,
-  UseFilters,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseFilters } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @UseFilters(new PrismaExceptionFilter())
 @Controller('auth')
