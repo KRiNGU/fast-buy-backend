@@ -8,6 +8,5 @@ export const mockAuth: Auth = {
   createdAt: new Date(Date.now()),
   isBanned: false,
   banReason: null,
-  refreshList: [],
   userId: 1,
 };

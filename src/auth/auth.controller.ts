@@ -11,7 +11,7 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { SignUpDto } from './dto/signup.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @UseFilters(new PrismaExceptionFilter())
@@ -19,26 +19,23 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Get(':id')
-  async getAuth(@Param('id', ParseIntPipe) id: number) {
-    return await this.authService.getAuth(id);
+  @Post('/signup')
+  signUp(@Body() dto: SignUpDto) {
+    return this.authService.signUp(dto);
   }
 
-  @Post()
-  async createAuth(@Body() dto: CreateAuthDto) {
-    return await this.authService.createAuth(dto);
+  @Post('/signin')
+  signIn() {
+    return this.authService.signIn();
   }
 
-  @Put(':id')
-  async updateAuth(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateAuthDto,
-  ) {
-    return await this.authService.updateAuth(id, dto);
+  @Post('/logout')
+  logout() {
+    return this.authService.logout();
   }
 
-  @Delete(':id')
-  async deleteAuth(@Param('id', ParseIntPipe) id: number) {
-    return await this.authService.deleteAuth(id);
+  @Post('/refresh')
+  refreshToken() {
+    return this.authService.refreshToken();
   }
 }
