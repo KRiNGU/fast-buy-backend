@@ -1,4 +1,4 @@
-import { Tokens } from '@/auth/models';
+import { JwtPayload, Tokens } from '@/auth/models';
 import { PrismaService } from '@/prisma.service';
 import { hashData } from '@/utils/utils';
 import { Injectable } from '@nestjs/common';
@@ -14,16 +14,33 @@ export class TokenService {
 
   async createToken(authId: number, refreshToken: string): Promise<Token> {
     const hashedToken = await hashData(refreshToken);
+    const dateNow = Date.now();
+    const expiresAt = this.getExpiresDateRefreshToken(dateNow);
+    this.cleanExpiredTokens(authId, expiresAt);
     return await this.prismaService.token.create({
-      data: { authId, token: hashedToken },
+      data: { authId, token: hashedToken, expiresAt },
     });
   }
 
-  async updateTokens(id: number, refreshToken: string) {
+  async updateTokens(prevToken: string, refreshToken: string): Promise<Token> {
+    const hashedPrevToken = await hashData(prevToken);
+    const expiresAt = this.getExpiresDateRefreshToken(Date.now());
     const hashedToken = await hashData(refreshToken);
-    await this.prismaService.token.update({
-      where: { id: id },
-      data: { token: hashedToken },
+    return await this.prismaService.token.update({
+      where: { token: hashedPrevToken },
+      data: { token: hashedToken, expiresAt },
+    });
+  }
+
+  async cleanExpiredTokens(authId: number, expiresAt: number) {
+    const tokens = await this.prismaService.token.findMany({
+      where: { authId },
+    });
+    const deleteTokens: string[] = tokens
+      .filter((token) => token.expiresAt <= expiresAt)
+      .map((token) => token.token);
+    await this.prismaService.token.deleteMany({
+      where: { token: { in: deleteTokens } },
     });
   }
 
@@ -32,29 +49,20 @@ export class TokenService {
     email: string,
     login: string,
   ): Promise<Tokens> {
+    const jwtPayload: JwtPayload = {
+      sub: authId,
+      email,
+      login,
+    };
     const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(
-        {
-          sub: authId,
-          email,
-          login,
-        },
-        {
-          secret: process.env.ACCESS_SECRET_KEY,
-          expiresIn: 15 * 60,
-        },
-      ),
-      this.jwtService.signAsync(
-        {
-          sub: authId,
-          email,
-          login,
-        },
-        {
-          secret: process.env.REFRESH_SECRET_KEY,
-          expiresIn: 30 * 24 * 60 * 60,
-        },
-      ),
+      this.jwtService.signAsync(jwtPayload, {
+        secret: process.env.ACCESS_SECRET_KEY,
+        expiresIn: process.env.ACCESS_EXPIRES_IN_SECONDS,
+      }),
+      this.jwtService.signAsync(jwtPayload, {
+        secret: process.env.REFRESH_SECRET_KEY,
+        expiresIn: process.env.REFRESH_EXPIRES_IN_SECONDS,
+      }),
     ]);
 
     return {
@@ -62,4 +70,10 @@ export class TokenService {
       refreshToken,
     };
   }
+
+  private getExpiresDateRefreshToken = (date: number): number => {
+    return (
+      date + Number.parseInt(process.env.REFRESH_EXPIRES_IN_SECONDS) * 1000
+    );
+  };
 }

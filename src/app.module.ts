@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ItemModule } from './item/item.module';
 import { CommentModule } from './comment/comment.module';
+import { AccessTokenGuard } from './guards/access-token.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -18,6 +20,12 @@ import { CommentModule } from './comment/comment.module';
     CommentModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
+  ],
 })
 export class AppModule {}

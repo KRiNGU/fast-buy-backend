@@ -22,10 +22,10 @@ model User {
 }
 
 model Token {
-  id Int @default(autoincrement()) @id
   token String @unique
   auth Auth @relation(fields: [authId], references: [id])
   authId Int
+  expiresAt BigInt
 }
 
 model Auth {
