@@ -10,7 +10,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
-  patronymic: string;
+  patronymic?: string;
 
   @IsEnum(Role)
   role: Role;

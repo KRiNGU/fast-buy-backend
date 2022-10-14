@@ -12,7 +12,7 @@ describe('TokenService', () => {
   const prismaService: PrismaService = new PrismaService();
   let jwtService: JwtService;
   const refreshToken = 'hashIt';
-  const mockToken: Token = getMockToken(BigInt(Date.now()), refreshToken);
+  const mockToken: Token = getMockToken(refreshToken);
 
   beforeEach(() => {
     jwtService = new JwtService();
@@ -80,7 +80,7 @@ describe('TokenService', () => {
       let token: Token;
 
       beforeEach(async () => {
-        token = await service.updateTokens(
+        token = await service.updateToken(
           mockToken.authId,
           refreshToken,
           newRefreshToken,

@@ -30,9 +30,6 @@ export class AuthService {
       newAuth.email,
       newAuth.login,
     );
-    await this.prismaService.auth.findUniqueOrThrow({
-      where: { id: newAuth.id },
-    });
     await this.tokenService.createToken(newAuth.id, tokens.refreshToken);
     return tokens;
   }
@@ -50,7 +47,7 @@ export class AuthService {
       auth.login,
     );
     if (updatableToken) {
-      await this.tokenService.updateTokens(
+      await this.tokenService.updateToken(
         auth.id,
         updatableToken,
         tokens.refreshToken,
@@ -87,7 +84,7 @@ export class AuthService {
       auth.login,
     );
 
-    await this.tokenService.updateTokens(
+    await this.tokenService.updateToken(
       auth.id,
       refreshableToken,
       tokens.refreshToken,

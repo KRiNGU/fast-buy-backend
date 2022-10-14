@@ -22,7 +22,7 @@ export class TokenService {
     });
   }
 
-  async updateTokens(
+  async updateToken(
     authId: number,
     prevToken: string,
     refreshToken: string,
