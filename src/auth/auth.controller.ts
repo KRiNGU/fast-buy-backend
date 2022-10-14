@@ -1,6 +1,6 @@
 import { GetCurrentAuthId } from '@/decorators/get-current-auth-id.decorator';
 import { GetCurrentAuth } from '@/decorators/get-current-auth.decorator';
-import { Public } from '@/decorators/public.decorator';
+import { NoAccessToken } from '@/decorators/no-access-token.decorator';
 import { RefreshTokenGuard } from '@/guards/refresh-token.guard';
 import { PrismaExceptionFilter } from '@filters/prisma-exception.filter';
 import {
@@ -23,25 +23,34 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/signup')
-  @Public()
+  @NoAccessToken()
   @HttpCode(HttpStatus.CREATED)
   signUp(@Body() dto: SignUpDto): Promise<Tokens> {
     return this.authService.signUp(dto);
   }
 
   @Post('/signin')
-  @Public()
+  @NoAccessToken()
   @HttpCode(HttpStatus.OK)
   signIn(@Body() dto: SignInDto) {
     return this.authService.signIn(dto);
   }
 
+  @NoAccessToken()
+  @UseGuards(RefreshTokenGuard)
   @Post('/logout')
   @HttpCode(HttpStatus.OK)
-  logout() {
-    return this.authService.logout();
+  logout(@GetCurrentAuth('refreshToken') refreshToken: string) {
+    return this.authService.logout(refreshToken);
   }
 
+  @Post('/logout/all')
+  @HttpCode(HttpStatus.OK)
+  logoutAll(@GetCurrentAuthId() authId: number) {
+    return this.authService.logoutAll(authId);
+  }
+
+  @NoAccessToken()
   @Post('/refresh')
   @UseGuards(RefreshTokenGuard)
   @HttpCode(HttpStatus.OK)
@@ -49,6 +58,6 @@ export class AuthController {
     @GetCurrentAuthId() authId: number,
     @GetCurrentAuth('refreshToken') refreshToken: string,
   ) {
-    return this.authService.refreshToken(refreshToken);
+    return this.authService.refreshToken(authId, refreshToken);
   }
 }

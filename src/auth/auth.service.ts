@@ -3,7 +3,7 @@ import { PrismaService } from '@/prisma.service';
 import { SignUpDto } from './dto/signup.dto';
 import { Tokens } from './models';
 import { TokenService } from '@/token/token.service';
-import { hashData } from '@/utils/utils';
+import { hashData, hashDataEq } from '@/utils/utils';
 import { SignInDto } from './dto/signin.dto';
 import { compare } from 'bcrypt';
 
@@ -30,6 +30,9 @@ export class AuthService {
       newAuth.email,
       newAuth.login,
     );
+    await this.prismaService.auth.findUniqueOrThrow({
+      where: { id: newAuth.id },
+    });
     await this.tokenService.createToken(newAuth.id, tokens.refreshToken);
     return tokens;
   }
@@ -47,19 +50,49 @@ export class AuthService {
       auth.login,
     );
     if (updatableToken) {
-      await this.tokenService.updateTokens(updatableToken, tokens.refreshToken);
+      await this.tokenService.updateTokens(
+        auth.id,
+        updatableToken,
+        tokens.refreshToken,
+      );
     } else {
       await this.tokenService.createToken(auth.id, tokens.refreshToken);
     }
     return tokens;
   }
 
-  async logout() {
-    return null;
+  async logout(refreshToken: string) {
+    this.tokenService.deleteToken(refreshToken);
   }
 
-  async refreshToken(oldRefreshToken: string) {
-    console.log(oldRefreshToken);
-    return null;
+  async logoutAll(authId: number) {
+    this.tokenService.clear(authId);
+  }
+
+  async refreshToken(
+    authId: number,
+    refreshableToken: string,
+  ): Promise<Tokens> {
+    const hashedToken = hashDataEq(refreshableToken);
+    const auth = await this.prismaService.auth.findUniqueOrThrow({
+      where: { id: authId },
+    });
+    await this.prismaService.token.findUniqueOrThrow({
+      where: { token: hashedToken },
+    });
+
+    const tokens = await this.tokenService.getTokens(
+      auth.id,
+      auth.email,
+      auth.login,
+    );
+
+    await this.tokenService.updateTokens(
+      auth.id,
+      refreshableToken,
+      tokens.refreshToken,
+    );
+
+    return tokens;
   }
 }

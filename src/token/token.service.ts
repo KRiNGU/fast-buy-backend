@@ -1,6 +1,6 @@
 import { JwtPayload, Tokens } from '@/auth/models';
 import { PrismaService } from '@/prisma.service';
-import { hashData } from '@/utils/utils';
+import { hashDataEq } from '@/utils/utils';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Token } from '@prisma/client';
@@ -13,35 +13,49 @@ export class TokenService {
   ) {}
 
   async createToken(authId: number, refreshToken: string): Promise<Token> {
-    const hashedToken = await hashData(refreshToken);
+    const hashedToken = hashDataEq(refreshToken);
     const dateNow = Date.now();
     const expiresAt = this.getExpiresDateRefreshToken(dateNow);
-    this.cleanExpiredTokens(authId, expiresAt);
+    await this.clearExpiredTokens(authId, expiresAt);
     return await this.prismaService.token.create({
       data: { authId, token: hashedToken, expiresAt },
     });
   }
 
-  async updateTokens(prevToken: string, refreshToken: string): Promise<Token> {
-    const hashedPrevToken = await hashData(prevToken);
+  async updateTokens(
+    authId: number,
+    prevToken: string,
+    refreshToken: string,
+  ): Promise<Token> {
+    const hashedPrevToken = hashDataEq(prevToken);
     const expiresAt = this.getExpiresDateRefreshToken(Date.now());
-    const hashedToken = await hashData(refreshToken);
+    const hashedToken = hashDataEq(refreshToken);
+    await this.clearExpiredTokens(authId, expiresAt);
     return await this.prismaService.token.update({
       where: { token: hashedPrevToken },
       data: { token: hashedToken, expiresAt },
     });
   }
 
-  async cleanExpiredTokens(authId: number, expiresAt: number) {
+  async clearExpiredTokens(authId: number, expiresAt: number) {
     const tokens = await this.prismaService.token.findMany({
       where: { authId },
     });
     const deleteTokens: string[] = tokens
-      .filter((token) => token.expiresAt <= expiresAt)
+      .filter((token) => token.expiresAt >= expiresAt)
       .map((token) => token.token);
     await this.prismaService.token.deleteMany({
       where: { token: { in: deleteTokens } },
     });
+  }
+
+  async clear(authId: number) {
+    await this.prismaService.token.deleteMany({ where: { authId } });
+  }
+
+  async deleteToken(refreshToken: string): Promise<void> {
+    const hashedToken = hashDataEq(refreshToken);
+    await this.prismaService.token.delete({ where: { token: hashedToken } });
   }
 
   async getTokens(
@@ -71,9 +85,6 @@ export class TokenService {
     };
   }
 
-  private getExpiresDateRefreshToken = (date: number): number => {
-    return (
-      date + Number.parseInt(process.env.REFRESH_EXPIRES_IN_SECONDS) * 1000
-    );
-  };
+  private getExpiresDateRefreshToken = (date: number): number =>
+    date + Number.parseInt(process.env.REFRESH_EXPIRES_IN_SECONDS) * 1000;
 }

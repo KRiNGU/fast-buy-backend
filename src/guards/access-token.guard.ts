@@ -9,7 +9,7 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
   }
 
   canActivate(context: ExecutionContext) {
-    const isPublic = this.reflector.getAllAndOverride('isPublic', [
+    const isPublic = this.reflector.getAllAndOverride('NoAccessToken', [
       context.getHandler(),
       context.getClass(),
     ]);
