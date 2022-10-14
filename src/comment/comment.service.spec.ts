@@ -7,10 +7,9 @@ import { shortenedName } from '@/utils/utils';
 
 describe('CommentService', () => {
   let service: CommentService;
-  let prismaService: PrismaService;
+  const prismaService: PrismaService = new PrismaService();
 
   beforeEach(async () => {
-    prismaService = new PrismaService();
     service = new CommentService(prismaService);
   });
 

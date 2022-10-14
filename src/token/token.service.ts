@@ -16,9 +16,9 @@ export class TokenService {
     const hashedToken = hashDataEq(refreshToken);
     const dateNow = Date.now();
     const expiresAt = this.getExpiresDateRefreshToken(dateNow);
-    await this.clearExpiredTokens(authId, expiresAt);
+    await this.clearExpiredTokens(authId);
     return await this.prismaService.token.create({
-      data: { authId, token: hashedToken, expiresAt },
+      data: { authId, token: hashedToken, expiresAt: expiresAt },
     });
   }
 
@@ -30,19 +30,19 @@ export class TokenService {
     const hashedPrevToken = hashDataEq(prevToken);
     const expiresAt = this.getExpiresDateRefreshToken(Date.now());
     const hashedToken = hashDataEq(refreshToken);
-    await this.clearExpiredTokens(authId, expiresAt);
+    await this.clearExpiredTokens(authId);
     return await this.prismaService.token.update({
       where: { token: hashedPrevToken },
-      data: { token: hashedToken, expiresAt },
+      data: { token: hashedToken, expiresAt: expiresAt },
     });
   }
 
-  async clearExpiredTokens(authId: number, expiresAt: number) {
+  async clearExpiredTokens(authId: number) {
     const tokens = await this.prismaService.token.findMany({
       where: { authId },
     });
-    const deleteTokens: string[] = tokens
-      .filter((token) => token.expiresAt >= expiresAt)
+    const deleteTokens = tokens
+      .filter((token) => token.expiresAt <= BigInt(Date.now()))
       .map((token) => token.token);
     await this.prismaService.token.deleteMany({
       where: { token: { in: deleteTokens } },
@@ -85,6 +85,8 @@ export class TokenService {
     };
   }
 
-  private getExpiresDateRefreshToken = (date: number): number =>
-    date + Number.parseInt(process.env.REFRESH_EXPIRES_IN_SECONDS) * 1000;
+  getExpiresDateRefreshToken = (date: number): bigint =>
+    BigInt(
+      date + Number.parseInt(process.env.REFRESH_EXPIRES_IN_SECONDS) * 1000,
+    );
 }

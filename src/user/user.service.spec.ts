@@ -5,10 +5,9 @@ import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;
-  let prismaService: PrismaService;
+  const prismaService: PrismaService = new PrismaService();
 
   beforeEach(async () => {
-    prismaService = new PrismaService();
     service = new UserService(prismaService);
   });
 
