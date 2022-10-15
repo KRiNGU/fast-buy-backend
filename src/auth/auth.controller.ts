@@ -32,7 +32,7 @@ export class AuthController {
   @Post('/signin')
   @NoAccessToken()
   @HttpCode(HttpStatus.OK)
-  signIn(@Body() dto: SignInDto) {
+  signIn(@Body() dto: SignInDto): Promise<Tokens> {
     return this.authService.signIn(dto);
   }
 
@@ -57,7 +57,7 @@ export class AuthController {
   refreshToken(
     @GetCurrentAuthId() authId: number,
     @GetCurrentAuth('refreshToken') refreshToken: string,
-  ) {
+  ): Promise<Tokens> {
     return this.authService.refreshToken(authId, refreshToken);
   }
 }
